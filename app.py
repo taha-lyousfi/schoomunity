@@ -38,7 +38,7 @@ def login():
 
 
 @app.route('/api/users/<username>')
-def show_user(id):
+def show_user(username):
     try:
         user = User.query.filter_by(username=username).first()
         return jsonify(user.serialize)
