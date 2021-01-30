@@ -5,6 +5,9 @@ from flask_sqlalchemy import SQLAlchemy
 from models import (User, Post)
 import os
 
+from models import db
+
+
 port = int(os.environ.get('PORT', 5000))
 
 # Initialize Flask app with SQLAlchemy
@@ -37,7 +40,7 @@ def login():
 @app.route('/api/users/<username>')
 def show_user(id):
     try:
-        user = User.query.filter_by(username=username).first_or_404()
+        user = User.query.filter_by(username=username).first()
         return jsonify(user.serialize)
     except:
         return not_found("User does not exist")
@@ -143,4 +146,7 @@ def not_found(message):
 
 
 if __name__ == '__main__':
+    with app.app_context():
+        db.create_all()
+
     app.run(host='0.0.0.0', port=port, debug=True)
