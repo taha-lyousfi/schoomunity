@@ -1,7 +1,7 @@
 click ==6.7
 itsdangerous ==0.24
 jsonify ==0.5
-psycopg2 ==2.7.1
+psycopg2 ==2.7.3.2
 six ==1.10.0
 Flask ==0.12
 Flask-SQLAlchemy ==2.2
