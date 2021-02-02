@@ -44,18 +44,19 @@ def show_user(username):
     #     return not_found("User does not exist")
 
 
-@app.route('/api/users', methods=['POST'])
+@app.route('/api/users', methods=['GET', 'POST'])
 def create_user():
-    print(request.form['username'])
-    try:
-        user = User(request.form)
-        db.session.add(user)
-        db.session.commit()
-        return jsonify({'user': user.serialize}), 201
-    except KeyError:
-        return bad_request('Missing required data.')
-    # except:
-    #     return bad_request("An error occured !!")
+    if request.method == 'POST':
+        print(request.form['username'])
+        try:
+            user = User(request.form)
+            db.session.add(user)
+            db.session.commit()
+            return jsonify({'user': user.serialize}), 201
+        except KeyError:
+            return bad_request('Missing required data.')
+        # except:
+        #     return bad_request("An error occured !!")
 
 
 @app.route('/api/users/edit', methods=['POST'])
@@ -110,7 +111,7 @@ def create_post():
         return bad_request('Given user_id does not exist or there is an error in the credentials.')
 
 
-@app.route('/api/posts/edit', methods=['POST'])
+@app.route('/api/posts/edit', methods=['GET', 'POST'])
 def edit_post():
     try:
         user = User.query.filter_by(
