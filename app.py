@@ -47,9 +47,10 @@ def show_user(username):
 @app.route('/api/users', methods=['GET', 'POST'])
 def create_user():
     if request.method == 'POST':
-        print(request.form['username'])
+        print(request.json)
+        print(request.json['username'])
         try:
-            user = User(request.form)
+            user = User(request.json)
             db.session.add(user)
             db.session.commit()
             return jsonify({'user': user.serialize}), 201
@@ -64,9 +65,9 @@ def edit_user():
     print(request.form['old_username'])
     try:
         user = User.query.filter_by(
-            username=request.form['old_username']).first_or_404()
-        if user.check_hash(request.form['old_password']):
-            user.update(request.form)
+            username=request.json['old_username']).first_or_404()
+        if user.check_hash(request.json['old_password']):
+            user.update(request.json)
         else:
             return bad_request('Incorrect password')
         return jsonify({'user': user.serialize}), 201
@@ -88,7 +89,7 @@ def show_post(id):
 
 @app.route('/api/posts', methods=['POST'])
 def create_post():
-    request_json = request.form
+    request_json = request.json
     try:
         if 'username' in request_json and 'password' in request_json:
             try:
@@ -111,15 +112,15 @@ def create_post():
         return bad_request('Given user_id does not exist or there is an error in the credentials.')
 
 
-@app.route('/api/posts/edit', methods=['GET', 'POST'])
+@app.route('/api/posts/edit', methods=['POST'])
 def edit_post():
     try:
         user = User.query.filter_by(
-            username=request.form['username']).first_or_404()
-        if user.check_hash(request.form['password']):
-            post = Post.query.filter_by(id=request.form["id"])
-            if post.user_id == request.form['user_id']:
-                post.update(request.form)
+            username=request.json['username']).first_or_404()
+        if user.check_hash(request.json['password']):
+            post = Post.query.filter_by(id=request.json["id"])
+            if post.user_id == request.json['user_id']:
+                post.update(request.json)
             else:
                 return bad_request("You don't have the permission to edit this post!!")
         else:
