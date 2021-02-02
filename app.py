@@ -25,8 +25,8 @@ def main_page():
 def login():
     # try:
     user_ = User.query.filter_by(
-        username=request.form['username']).first()
-    if user_.check_hash(request.form['password']):
+        username=request.json['username']).first()
+    if user_.check_hash(request.json['password']):
         return jsonify({'user': user_.serializeable}), 200
     else:
         print('else!')
@@ -62,7 +62,7 @@ def create_user():
 
 @app.route('/api/users/edit', methods=['POST'])
 def edit_user():
-    print(request.form['old_username'])
+    print(request.json['old_username'])
     try:
         user = User.query.filter_by(
             username=request.json['old_username']).first_or_404()
